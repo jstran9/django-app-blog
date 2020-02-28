@@ -127,3 +127,10 @@ STATIC_URL = "/static/"
 # change setting to use a different bootstrap style than the default (bootstrap 2)
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
+# redirect to a page after successfully logging in!
+LOGIN_REDIRECT_URL = "blog-home"
+
+# tell Django where to find our log-in route.
+# example: when we have come across a page that requires the user to be logged in..
+LOGIN_URL = "login"  # name for the URL pattern in the project's url.py file.
+
