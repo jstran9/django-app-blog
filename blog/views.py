@@ -1,11 +1,29 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+
+
+posts = [
+    {
+        "author": "CoreyMS",
+        "title": "Blog Post 1",
+        "content": "First post content",
+        "date_posted": "August 27, 2018",
+    },
+    {
+        "author": "Jane Doe",
+        "title": "Blog Post 2",
+        "content": "Second post content",
+        "date_posted": "August 28 2018",
+    },
+]
 
 
 def home(request):
-    # need request to get function to work later on.
-    return HttpResponse('<h1>Blog Home</h1>')
+    # third argument is optional and is the context which is a way for us to pass information into our template.
+    # an http response is returned.
+    # our views need to return an http response or an exception.
+    context = {"posts": posts}
+    return render(request, "blog/home.html", context)
 
 
 def about(request):
-    return HttpResponse('<h2>Blog About Roxy!</h2>')
+    return render(request, "blog/about.html", {"title": "About Page!!"})
