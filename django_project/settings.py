@@ -134,3 +134,8 @@ LOGIN_REDIRECT_URL = "blog-home"
 # example: when we have come across a page that requires the user to be logged in..
 LOGIN_URL = "login"  # name for the URL pattern in the project's url.py file.
 
+# directory where the uploaded files are stored.
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+MEDIA_URL = "/media/"
+
