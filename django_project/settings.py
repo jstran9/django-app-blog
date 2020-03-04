@@ -126,6 +126,9 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
 # change setting to use a different bootstrap style than the default (bootstrap 2)
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
