@@ -25,7 +25,7 @@ SECRET_KEY = os.environ["DJANGO_APP_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG_FLAG") == "True"
 
-ALLOWED_HOSTS = ["tt-django-blog-app.herokuapp.com"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
