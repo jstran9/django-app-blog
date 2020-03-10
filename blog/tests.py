@@ -11,12 +11,12 @@ from django.http.response import (
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.firefox.webdriver import WebDriver
-
+import os
 
 
 class PostTestCase(TestCase, TestDataGenerator):
     def setUp(self):
-        super().createSampleData()
+        super().create_sample_data()
 
     def test_posts_have_title(self):
         post_one = Post.objects.get(title=self.TEST_TITLE_ONE)
@@ -118,7 +118,7 @@ class PostTestCase(TestCase, TestDataGenerator):
 
 class UserViewTestCase(TestCase, TestDataGenerator):
     def setUp(self):
-        super().createSampleData()
+        super().create_sample_data()
 
     def test_view_profile_as_logged_in(self):
         c = Client()
@@ -134,7 +134,6 @@ class UserViewTestCase(TestCase, TestDataGenerator):
 
 # TODO: will need to rename this once I write a few tests using it.
 class MySeleniumTests(StaticLiveServerTestCase, TestDataGenerator):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -147,21 +146,67 @@ class MySeleniumTests(StaticLiveServerTestCase, TestDataGenerator):
         super().tearDownClass()
 
     def setUp(self):
-        super().createSampleData()
+        super().create_sample_data()
+
+    def tearDown(self):
+        super().delete_sample_data()
 
     def login_helper(self):
-        self.selenium.get('%s%s' % (self.live_server_url, '/login/'))
+        self.selenium.get("%s%s" % (self.live_server_url, "/login/"))
         username_input = self.selenium.find_element_by_name("username")
         username_input.send_keys(self.TEST_USERNAME_ONE)
         password_input = self.selenium.find_element_by_name("password")
         password_input.send_keys(self.TEST_PASSWORD)
-        self.selenium.find_element_by_xpath('/html/body/main/div/div[1]/div/form/div/button').click()
+        self.selenium.find_element_by_xpath(
+            "/html/body/main/div/div[1]/div/form/div/button"
+        ).click()
 
     def test_navbar_content(self):
         self.login_helper()
-        profile_link = self.selenium.find_element_by_xpath('//*[@id="navbarToggle"]/div[2]/a[2]')
+        profile_link = self.selenium.find_element_by_xpath(
+            '//*[@id="navbarToggle"]/div[2]/a[2]'
+        )
         self.assertEqual(profile_link.text, "Profile")
-        new_post_link = self.selenium.find_element_by_xpath('/html/body/header/nav/div/div/div[2]/a[1]')
+        new_post_link = self.selenium.find_element_by_xpath(
+            "/html/body/header/nav/div/div/div[2]/a[1]"
+        )
         self.assertEqual(new_post_link.text, "New Post")
-        log_out_link = self.selenium.find_element_by_xpath('/html/body/header/nav/div/div/div[2]/a[3]')
+        log_out_link = self.selenium.find_element_by_xpath(
+            "/html/body/header/nav/div/div/div[2]/a[3]"
+        )
         self.assertEqual(log_out_link.text, "Logout")
+
+    def test_create_post(self):
+        self.login_helper()
+        self.selenium.find_element_by_xpath('//*[@id="navbarToggle"]/div[2]/a[1]').click()
+        old_number_of_posts = self.get_number_of_posts()
+        expected_new_number_of_posts = old_number_of_posts + 1 
+        title = f"{self.TEST_TITLE_ONE} Two"
+        content = f"{self.TEST_CONTENT_ONE} Two"
+        title_input = self.selenium.find_element_by_name("title")
+        title_input.send_keys(title)
+        content_input = self.selenium.find_element_by_name("content")
+        content_input.send_keys(content)
+
+    def test_delete_post(self):
+        self.login_helper()
+        self.selenium.find_element_by_link_text(self.TEST_TITLE_ONE).click()
+        self.selenium.find_element_by_link_text('Delete').click()
+        self.selenium.find_element_by_xpath('/html/body/main/div/div[1]/div/form/div/button').click()
+
+    def test_update_post(self):
+        self.login_helper()
+        self.selenium.find_element_by_link_text(self.TEST_TITLE_ONE).click()
+        self.selenium.find_element_by_link_text('Update').click()
+        title_input = self.selenium.find_element_by_name('title')
+        title_input.send_keys(" New Update")
+        self.selenium.find_element_by_xpath('/html/body/main/div/div[1]/div/form/div/button').click()
+
+    def test_update_profile_picture(self):
+        self.login_helper()
+        self.selenium.find_element_by_xpath('//*[@id="navbarToggle"]/div[2]/a[2]').click()
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        image_path = f"{base_dir}/media/profile_pics/large.jpg"
+        upload_field = self.selenium.find_element_by_id("id_image")
+        upload_field.send_keys(image_path)
+        self.selenium.find_element_by_xpath('/html/body/main/div/div[1]/div/form/div/button').click()
