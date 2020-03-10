@@ -179,8 +179,6 @@ class MySeleniumTests(StaticLiveServerTestCase, TestDataGenerator):
     def test_create_post(self):
         self.login_helper()
         self.selenium.find_element_by_xpath('//*[@id="navbarToggle"]/div[2]/a[1]').click()
-        old_number_of_posts = self.get_number_of_posts()
-        expected_new_number_of_posts = old_number_of_posts + 1 
         title = f"{self.TEST_TITLE_ONE} Two"
         content = f"{self.TEST_CONTENT_ONE} Two"
         title_input = self.selenium.find_element_by_name("title")
