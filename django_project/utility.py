@@ -19,7 +19,7 @@ class TestDataGenerator:
     TEST_EXPECTED_SIZE_TWO = 2
     TEST_EXPECTED_SIZE_THREE = 3
 
-    def createSampleData(self):
+    def create_sample_data(self):
         user_one = User.objects.create_user(
             username=self.TEST_USERNAME_ONE,
             password=self.TEST_PASSWORD,
@@ -40,3 +40,12 @@ class TestDataGenerator:
         Post.objects.create(
             title=self.TEST_TITLE_TWO, content=self.TEST_CONTENT_TWO, author=user_two
         )
+
+    def delete_sample_data(self):
+        user_one = User.objects.get(username=self.TEST_USERNAME_ONE)
+        user_one.delete()
+        user_two = User.objects.get(username=self.TEST_USERNAME_TWO)
+        user_two.delete()
+
+    def get_number_of_posts(self):
+        return Post.objects.count()
